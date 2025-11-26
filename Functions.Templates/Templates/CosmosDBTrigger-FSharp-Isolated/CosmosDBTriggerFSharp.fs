@@ -25,5 +25,5 @@ module CosmosDBTriggerFSharp =
             context.GetLogger "CosmsoDBTriggerFSharp"
 
         if not (isNull input) && input.Count > 0 then
-            log.LogInformation(sprintf "Documents modified %d" input.Count)
-            log.LogInformation("First document Id " + input.[0].id)
+            logger.LogInformation(sprintf "Documents modified %d" input.Count)
+            logger.LogInformation("First document Id " + input.[0].id)

@@ -14,16 +14,15 @@ module BlobTriggerFSharp =
             name: string,
             context: FunctionContext
         ) =
-        let logger
-            = context.GetLogger "BlobTriggerFSharp"
+        async {
+            let logger = context.GetLogger "BlobTriggerFSharp"
 
-        use blobStreamReader
-            = new StreamReader(myBlob)
+            use blobStreamReader = new StreamReader(myBlob)
 
-        let blobContent
-            = blobStreamReader.ReadToEndAsync() |> Async.AwaitTask
+            let! blobContent = blobStreamReader.ReadToEndAsync() |> Async.AwaitTask
 
-        let msg =
-            sprintf "F# Blob trigger function Processed blob\nName: %s \n Data: %s" name blobContent
+            let msg =
+                sprintf "F# Blob trigger function Processed blob\nName: %s \n Data: %s" name blobContent
 
-        logger.LogInformation msg
+            logger.LogInformation msg
+        } |> Async.StartAsTask

@@ -12,12 +12,14 @@ module HttpTriggerFSharp =
         ([<HttpTrigger(AuthorizationLevel.AuthLevelValue, "get", "post", Route = null)>] req: HttpRequestData)
         (context: FunctionContext)
         =
-        let logger = context.GetLogger "HttpTriggerFSharp"
-        logger.LogInformation "F# HTTP trigger function processed a request"
+        async {
+            let logger = context.GetLogger "HttpTriggerFSharp"
+            logger.LogInformation "F# HTTP trigger function processed a request"
 
-        let response = req.CreateResponse(HttpStatusCode.OK)
-        response.Headers.Add("Content-Type", "text/plain; charset=utf-8")
+            let response = req.CreateResponse(HttpStatusCode.OK)
+            response.Headers.Add("Content-Type", "text/plain; charset=utf-8")
 
-        response.WriteString "Welcome to Azure Functions!"
+            do! response.WriteStringAsync("Welcome to Azure Functions!") |> Async.AwaitTask
 
-        response
+            return response
+        } |> Async.StartAsTask
